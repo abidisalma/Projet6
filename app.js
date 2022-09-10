@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-Parser");
 const path = require("path");
 const mongoose = require("mongoose");
 
@@ -16,7 +15,6 @@ mongoose
 
 const app = express();
 app.use(express.json());
-app.use(bodyParser.json());
 //ajoutez le middleware suivant avant la route d'API
 app.use((req, res, next) => {
 	res.setHeader("Access-Control-Allow-Origin", "*"); //d'accéder à notre API depuis n'importe quelle origine (

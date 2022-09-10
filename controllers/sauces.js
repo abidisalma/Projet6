@@ -59,22 +59,21 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
-	console.log(req.body.heat);
-	if (req.body.sauce.heat > 10) {
-		res.status(403).json({
-			message: "Vous ne pouvez pas ajouter plus de 10 heat!"
-		});
-		return;
-	}
 	const sauceObject = req.file
 		? {
 				...JSON.parse(req.body.sauce),
 				imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
 		  }
 		: { ...req.body };
+	if (sauceObject.heat > 10) {
+		res.status(403).json({
+			message: "Vous ne pouvez pas ajouter plus de 10 heat!"
+		});
+		return;
+	}
 
 	delete sauceObject._userId;
-	delete sauceObject.like; // supprimer like et dislike de l'array sauceobjet
+	delete sauceObject.like;
 	delete sauceObject.dislike;
 	Sauce.findOne({ _id: req.params.id })
 		.then(sauce => {
@@ -148,20 +147,20 @@ const checklikeifexiste = (sauce, user) => {
 
 exports.LikeSauce = async (req, res, next) => {
 	console.log(req.body);
-	//verifier si le variable like exisrte and === 1 ( like )
+	//verifier si le variable like existe and === 1 ( like )
 	if (req.body.like && req.body.like === 1) {
 		console.log(req.body);
 		let check = await checklikeifexiste(req.params.id, req.auth.userId); //verifier si user liked sauce
 		console.log(check);
 		if (check.length === 0) {
-			// si user n'esxite pas il va ajouter un like
+			// si user n'exsite pas il va ajouter un like
 			let res0 = addlike(req.params.id, req.auth.userId);
 			res.status(200).json(res0); // il va executer la fonction addlikeet retourner leur resultat a l'api
 		} else {
 			console.log("like existe");
 			res.status(201).json({ like: "already liked" });
 		}
-		//verifier si le variable like exisrte and === -1 ( dislike )
+		//verifier si le variable like existe and === -1 ( dislike )
 	} else if (req.body.like && req.body.like === -1) {
 		let check = await checkdislikeifexiste(req.params.id, req.auth.userId);
 		if (check.length === 0) {

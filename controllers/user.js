@@ -4,7 +4,7 @@ const User = require("../models/user");
 const emailvalidator = require("email-validator");
 const passwordValidator = require("password-validator");
 const schema = new passwordValidator(); //initialisation d'un nouveau password validator
-schema //declaration
+schema
 	.is()
 	.min(8, "minimum 8 chars ") // Minimum length 8
 	.is()
